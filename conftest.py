@@ -9,6 +9,7 @@ from script_os import (
     ARCHIVE_FILE
 )
 
+
 @pytest.fixture(scope="function", autouse=True)
 def create_ziparchive_and_extract():
     if not os.path.exists(ARCHIVE_FILE):

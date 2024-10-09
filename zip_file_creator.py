@@ -1,10 +1,12 @@
 import zipfile
 import os
 
+
 def create_zip(zip_name, file_names):
     with zipfile.ZipFile(zip_name, 'w') as zipf:
         for file in file_names:
             zipf.write(file, os.path.basename(file))
+
 
 if __name__ == "__main__":
     files_to_zip = [
