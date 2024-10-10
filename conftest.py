@@ -1,28 +1,25 @@
 import shutil
 import pytest
+import zipfile
 import os
-from zipfile import ZipFile
-
-from script_os import (
-    FILES_DIR,
-    FILES2_DIR,
-    ARCHIVE_FILE
-)
 
 
-@pytest.fixture(scope="function", autouse=True)
-def create_ziparchive_and_extract():
-    if not os.path.exists(ARCHIVE_FILE):
-        with ZipFile(ARCHIVE_FILE, 'w') as zip_file:
-            for file in os.listdir(FILES_DIR):
-                zip_file.write(os.path.join(FILES_DIR, file), file)
+tmp_dir = os.path.join(os.getcwd(), 'tmp')
+zip_path = os.path.join(os.getcwd(), "zipped")
+zip_resources = os.path.join(os.getcwd(), 'zipped', 'new_zip.zip')
 
-    if not os.path.exists(FILES2_DIR):
-        os.mkdir(FILES2_DIR)
 
-    with ZipFile(ARCHIVE_FILE, 'r') as zip_file:
-        zip_file.extractall(FILES2_DIR)
+@pytest.fixture(scope='function', autouse=True)
+def zip_new_file():
+    if not os.path.exists(zip_path):
+        os.mkdir(zip_path)
+
+    with zipfile.ZipFile(zip_path + '/new_zip.zip', 'w') as zip_file:
+        for file in os.listdir(tmp_dir):
+            add_file = os.path.join(tmp_dir, file)
+            zip_file.write(add_file, os.path.basename(add_file))
+            print(f'\nФайлы {file} - добавлен в архив')
 
     yield
 
-    shutil.rmtree(FILES2_DIR)
+    shutil.rmtree(zip_path)
